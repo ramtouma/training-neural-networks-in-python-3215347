@@ -54,9 +54,19 @@ class MultiLayerPerceptron:
 # Challenge: Finish the set_weights() and run() methods:
 
     def set_weights(self, w_init):
+        # why not make w_init a list of lists??
         # Write all the weights into the neural network.
-        # w_init is a list of floats. Organize it as you'd like. 
-        pass       
+        # w_init is a list of floats. Organize it as you'd like.
+        m = len(self.layers) # each layer is a row
+        self.weights = [] # list of lists containing weights for each neuron
+        k = 0
+        for i in range(1,m):
+            n = self.layers[i-1]
+            for j in range(self.layers[i]): # for each neuron
+                current_weights = w_init[k : k + n]
+                self.network[i][j].set_weights(current_weights)
+                self.weights.append(current_weights) 
+                k += n       
 
     def print_weights(self):
         print()
@@ -68,5 +78,15 @@ class MultiLayerPerceptron:
     def run(self, x):
         # Run an input forward through the neural network.
         # x is a python list with the input values.
+        self.values[0] = x
+        for i in range(1,len(self.layers)):
+            for j in range(self.layers[i]):
+                self.values[i][j] = self.network[i][j].run(self.values[-1])
         return self.values[-1]
         
+mlp_test = MultiLayerPerceptron([2,2,1])
+print(mlp_test.network[1])
+mlp_test.set_weights([1.1,1.1,1.2,1.2,2,2])
+mlp_test.print_weights()
+print(mlp_test.weights)
+mlp_test.run([1,1])
