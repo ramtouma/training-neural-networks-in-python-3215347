@@ -61,7 +61,7 @@ class MultiLayerPerceptron:
         self.weights = [] # list of lists containing weights for each neuron
         k = 0
         for i in range(1,m):
-            n = self.layers[i-1]
+            n = self.layers[i-1] + 1 # add 1 for bias weight
             for j in range(self.layers[i]): # for each neuron
                 current_weights = w_init[k : k + n]
                 self.network[i][j].set_weights(current_weights)
@@ -78,15 +78,21 @@ class MultiLayerPerceptron:
     def run(self, x):
         # Run an input forward through the neural network.
         # x is a python list with the input values.
-        self.values[0] = x
+        self.values[0] = np.copy(x)
         for i in range(1,len(self.layers)):
             for j in range(self.layers[i]):
-                self.values[i][j] = self.network[i][j].run(self.values[-1])
-        return self.values[-1]
+                self.values[i][j] = self.network[i][j].run(self.values[i-1])
+        return self.values[-1][0]
         
 mlp_test = MultiLayerPerceptron([2,2,1])
 print(mlp_test.network[1])
-mlp_test.set_weights([1.1,1.1,1.2,1.2,2,2])
+mlp_test.set_weights([-10,-10,15,15,15,-10,10,10,-15])
 mlp_test.print_weights()
 print(mlp_test.weights)
 mlp_test.run([1,1])
+
+print("XOR Gate:")
+print ("0 0 = {0:.10f}".format(mlp_test.run([0,0])))
+print ("0 1 = {0:.10f}".format(mlp_test.run([0,1])))
+print ("1 0 = {0:.10f}".format(mlp_test.run([1,0])))
+print ("1 1 = {0:.10f}".format(mlp_test.run([1,1])))
