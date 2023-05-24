@@ -56,7 +56,7 @@ class MultiLayerPerceptron:
     def set_weights(self, w_init):
         # why not make w_init a list of lists??
         # Write all the weights into the neural network.
-        # w_init is a list of floats. Organize it as you'd like.
+        # w_init is a list of floats. Organize it as you'd like. I am free to change this
         m = len(self.layers) # each layer is a row
         self.weights = [] # list of lists containing weights for each neuron
         k = 0
@@ -78,11 +78,12 @@ class MultiLayerPerceptron:
     def run(self, x):
         # Run an input forward through the neural network.
         # x is a python list with the input values.
+        x = np.array(x, dtype = object)
         self.values[0] = np.copy(x)
         for i in range(1,len(self.layers)):
             for j in range(self.layers[i]):
                 self.values[i][j] = self.network[i][j].run(self.values[i-1])
-        return self.values[-1][0]
+        return self.values[-1]
         
 mlp_test = MultiLayerPerceptron([2,2,1])
 print(mlp_test.network[1])
@@ -92,7 +93,7 @@ print(mlp_test.weights)
 mlp_test.run([1,1])
 
 print("XOR Gate:")
-print ("0 0 = {0:.10f}".format(mlp_test.run([0,0])))
-print ("0 1 = {0:.10f}".format(mlp_test.run([0,1])))
-print ("1 0 = {0:.10f}".format(mlp_test.run([1,0])))
-print ("1 1 = {0:.10f}".format(mlp_test.run([1,1])))
+print ("0 0 = {0:.10f}".format(mlp_test.run([0,0])[0]))
+print ("0 1 = {0:.10f}".format(mlp_test.run([0,1])[0]))
+print ("1 0 = {0:.10f}".format(mlp_test.run([1,0])[0]))
+print ("1 1 = {0:.10f}".format(mlp_test.run([1,1])[0]))
