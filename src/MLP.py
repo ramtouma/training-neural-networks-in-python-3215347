@@ -105,9 +105,10 @@ class MultiLayerPerceptron:
 
         # STEPS 5 & 6: Calculate the deltas and update the weights
         for i in range(1,len(self.network)):
+            input = np.append(self.values[i-1],1)
             for j in range(self.layers[i]):
                 for k in range(self.layers[i-1]+1): #+1 for bias weight
-                    self.network[i][j].weights[k] += self.eta*self.d[i][j]*(np.append(self.values[i-1],1))[k]
+                    self.network[i][j].weights[k] += self.eta*self.d[i][j]*input[k]
         return MSE
 
 
