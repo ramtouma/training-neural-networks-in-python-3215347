@@ -81,31 +81,33 @@ class MultiLayerPerceptron:
     
     def bp(self, x, y):
         """Run a single (x,y) pair with the backpropagation algorithm."""
-        x = np.array(x,dtype=object)
+        x = np.array(x,dtype=object) # both numpy arrays
         y = np.array(y,dtype=object)
-
+        n = len(y)
         # Challenge: Write the Backpropagation Algorithm. 
         # Here you have it step by step:
-
-        # STEP 1: Feed a sample to the network 
         
+        # STEP 1: Feed a sample to the network 
+        o = self.run(x)
         # STEP 2: Calculate the MSE
-
+        MSE = np.sum((y-o)**2)/n
         # STEP 3: Calculate the output error terms
-
+        d_o = o*(1-o)*(y-o)
+        self.d[-1] = d_o
         # STEP 4: Calculate the error term of each unit on each layer
         for i in reversed(range(1,len(self.network)-1)):
             for h in range(len(self.network[i])):
                 fwd_error = 0.0
                 for k in range(self.layers[i+1]): 
-                    fwd_error += # fill in the blank               
-                self.d[i][h] = # fill in the blank
+                    fwd_error += self.network[i+1][k].weights[h]*self.d[i+1][k] # the weight on the input which corresponds to the output of the h neuron in the previous (i) layer     
+                o_ih = self.values[i][h]         
+                self.d[i][h] = o_ih*(1-o_ih)*fwd_error
 
         # STEPS 5 & 6: Calculate the deltas and update the weights
         for i in range(1,len(self.network)):
             for j in range(self.layers[i]):
-                for k in range(self.layers[i-1]+1):
-                    pass# fill in the blank
+                for k in range(self.layers[i-1]+1): #+1 for bias weight
+                    self.network[i][j].weights[k] += self.eta*self.d[i][j]*(np.append(self.values[i-1],1))[k]
         return MSE
 
 
@@ -122,6 +124,7 @@ for i in range(3000):
     mse = mse / 4
     if(i%100 == 0):
         print (mse)
+    
 
 mlp.print_weights()
     
