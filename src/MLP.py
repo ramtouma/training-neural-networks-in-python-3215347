@@ -92,45 +92,54 @@ class MultiLayerPerceptron:
         # STEP 2: Calculate the MSE
         MSE = np.sum((y-o)**2)/n
         # STEP 3: Calculate the output error terms
-        d_o = o*(1-o)*(y-o)
-        self.d[-1] = d_o
+        self.d[-1] = o*(1-o)*(y-o)
         # STEP 4: Calculate the error term of each unit on each layer
         for i in reversed(range(1,len(self.network)-1)):
             for h in range(len(self.network[i])):
                 fwd_error = 0.0
                 for k in range(self.layers[i+1]): 
-                    fwd_error += self.network[i][k].weights[h]*self.d[i+1][k] # the weight on the input which corresponds to the output of the h neuron in the previous (i) layer     
+                    fwd_error += self.network[i+1][k].weights[h]*self.d[i+1][k] # the weight on the input which corresponds to the output of the h neuron in the previous (i) layer     
                 o_ih = self.values[i][h]         
                 self.d[i][h] = o_ih*(1-o_ih)*fwd_error
 
         # STEPS 5 & 6: Calculate the deltas and update the weights
         for i in range(1,len(self.network)):
-            input = np.append(self.values[i-1],1)
+            input = np.append(self.values[i-1],self.bias)
             for j in range(self.layers[i]):
+                error = self.d[i][j]
                 for k in range(self.layers[i-1]+1): #+1 for bias weight
-                    self.network[i][j].weights[k] += self.eta*self.d[i][j]*input[k]
+                    self.network[i][j].weights[k] += self.eta*error*input[k]
         return MSE
 
 
 
 #test code
-mlp = MultiLayerPerceptron(layers=[2,2,1])
-print("\nTraining Neural Network as an XOR Gate...\n")
-for i in range(3000):
-    mse = 0.0
-    mse += mlp.bp([0,0],[0])
-    mse += mlp.bp([0,1],[1])
-    mse += mlp.bp([1,0],[1])
-    mse += mlp.bp([1,1],[0])
-    mse = mse / 4
-    if(i%100 == 0):
-        print (mse)
+counter = 0
+for j in range(100):
+    mlp = MultiLayerPerceptron(layers=[2,2,1], eta = 0.5)
+    print("\nTraining Neural Network as an XOR Gate...\n")
+    for i in range(3000):
+        mse = 0.0
+        mse += mlp.bp([0,0],[0])
+        mse += mlp.bp([0,1],[1])
+        mse += mlp.bp([1,0],[1])
+        mse += mlp.bp([1,1],[0])
+        mse = mse / 4
+    try:
+        assert(round(mlp.run([0,0])[0]) == 0)
+        assert(round(mlp.run([0,0])[0]) == 0)
+        assert(round(mlp.run([0,0])[0]) == 0)
+        assert(round(mlp.run([0,0])[0]) == 0)
+    except AssertionError:
+        counter += 1
+print(counter)
+
     
 
-mlp.print_weights()
+#mlp.print_weights()
     
-print("MLP:")
-print ("0 0 = {0:.10f}".format(mlp.run([0,0])[0]))
-print ("0 1 = {0:.10f}".format(mlp.run([0,1])[0]))
-print ("1 0 = {0:.10f}".format(mlp.run([1,0])[0]))
-print ("1 1 = {0:.10f}".format(mlp.run([1,1])[0]))
+#print("MLP:")
+#print ("0 0 = {0:.10f}".format(mlp.run([0,0])[0]))
+#print ("0 1 = {0:.10f}".format(mlp.run([0,1])[0]))
+#print ("1 0 = {0:.10f}".format(mlp.run([1,0])[0]))
+#print ("1 1 = {0:.10f}".format(mlp.run([1,1])[0]))
