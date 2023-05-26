@@ -99,7 +99,7 @@ class MultiLayerPerceptron:
             for h in range(len(self.network[i])):
                 fwd_error = 0.0
                 for k in range(self.layers[i+1]): 
-                    fwd_error += self.network[i+1][k].weights[h]*self.d[i+1][k] # the weight on the input which corresponds to the output of the h neuron in the previous (i) layer     
+                    fwd_error += self.network[i][k].weights[h]*self.d[i+1][k] # the weight on the input which corresponds to the output of the h neuron in the previous (i) layer     
                 o_ih = self.values[i][h]         
                 self.d[i][h] = o_ih*(1-o_ih)*fwd_error
 
