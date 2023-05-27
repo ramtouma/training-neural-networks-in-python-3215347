@@ -120,22 +120,43 @@ class MultiLayerPerceptron:
 
 
 # test code
-mlp = MultiLayerPerceptron(layers=[2, 2, 1])
-print("\nTraining Neural Network as an XOR Gate...\n")
-for i in range(3000):
-    mse = 0.0
-    mse += mlp.bp([0, 0], [0])
-    mse += mlp.bp([0, 1], [1])
-    mse += mlp.bp([1, 0], [1])
-    mse += mlp.bp([1, 1], [0])
-    mse = mse / 4
-    if (i % 100 == 0):
-        print(mse)
+#mlp = MultiLayerPerceptron(layers=[2, 2, 1])
+#print("\nTraining Neural Network as an XOR Gate...\n")
+#for i in range(3000):
+ #   mse = 0.0
+  #  mse += mlp.bp([0, 0], [0])
+   # mse += mlp.bp([0, 1], [1])
+   # mse += mlp.bp([1, 0], [1])
+   # mse += mlp.bp([1, 1], [0])
+    #mse = mse / 4
+    #if (i % 100 == 0):
+     #   print(mse)
 
-mlp.print_weights()
+#mlp.print_weights()
 
-print("MLP:")
-print("0 0 = {0:.10f}".format(mlp.run([0, 0])[0]))
-print("0 1 = {0:.10f}".format(mlp.run([0, 1])[0]))
-print("1 0 = {0:.10f}".format(mlp.run([1, 0])[0]))
-print("1 1 = {0:.10f}".format(mlp.run([1, 1])[0]))
+#print("MLP:")
+#print("0 0 = {0:.10f}".format(mlp.run([0, 0])[0]))
+#print("0 1 = {0:.10f}".format(mlp.run([0, 1])[0]))
+#print("1 0 = {0:.10f}".format(mlp.run([1, 0])[0]))
+#print("1 1 = {0:.10f}".format(mlp.run([1, 1])[0]))
+
+counter = 0
+for j in range(100):
+    mlp = MultiLayerPerceptron(layers=[2, 2, 1], eta=0.5)
+    print(j)
+    for i in range(3000):
+        mse = 0.0
+        mse += mlp.bp([0, 0], [0])
+        mse += mlp.bp([0, 1], [1])
+        mse += mlp.bp([1, 0], [1])
+        mse += mlp.bp([1, 1], [0])
+        mse = mse / 4
+    try:
+        assert (round(mlp.run([0, 0])[0]) == 0)
+        assert (round(mlp.run([0, 1])[0]) == 1)
+        assert (round(mlp.run([1, 0])[0]) == 1)
+        assert (round(mlp.run([1, 1])[0]) == 0)
+    except AssertionError:
+        counter += 1
+        print("Failure count: ", counter)
+print("Failure rate: ", counter/100)
